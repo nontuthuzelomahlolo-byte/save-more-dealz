@@ -1,56 +1,191 @@
 <style>
-body {
-  font-family: Arial;
-  background: #f2f2f2;
-  padding: 20px;
-}
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f2f2f2;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  h1 { text-align: center; color: #333; }
+  h2 { border-bottom: 3px solid red; padding-bottom: 5px; color: #d32f2f; }
+  
+  .shop-container {
+    margin-bottom: 40px;
+  }
 
-div {
-  background: white;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-}
+  .item-card {
+    background: white;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-button {
-  background: red;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-}
+  .item-info p { margin: 5px 0; }
+  .price { font-weight: bold; color: #2e7d32; font-size: 1.2em; }
+
+  button {
+    background: red;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  button:hover { background: #b30000; }
 </style>
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Sava More Deals</title>
+  <title>Save More Dealz - Multi-Shop Flyer</title>
 </head>
 <body>
 
-<h2>🔥 Today’s Deals</h2>
+  <h1>🔥 The Ultimate Township Flyer 🔥</h1>
 
-<div>
-  <p>Chicken Pack – R99</p>
-  <button onclick="likeDeal('chicken')">❤️ Like</button>
-</div>
-
-<div>
-  <p>Bread – R12</p>
-  <button onclick="likeDeal('bread')">❤️ Like</button>
-</div>
-
-<script>
-function likeDeal(item) {
-  alert("You liked " + item);
-}
-</script>
-
-    <h1>Weekly Specials</h1>
+  <div class="shop-container">
+    <h2>🔴 Shoprite - Lower Prices You Can Trust</h2>
     
-    <div>
-        <h2>Combo Deal 1</h2>
-        <p>Maize Meal 10kg + Cooking Oil 2L</p>
-        <p><strong>R199.99</strong></p>
-        <button>Add to Cart</button>
+    <div class="item-card">
+      <div class="item-info">
+        <p>Ritebrand Maize Meal 10kg</p>
+        <p class="price">R 99.00</p>
+      </div>
+      <button onclick="saveToWallet('Shoprite Maize')">Add to Wallet</button>
     </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>Chicken Mixed Portions 2kg</p>
+        <p class="price">R 75.00</p>
+      </div>
+      <button onclick="saveToWallet('Shoprite Chicken')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>Sunlight Dishwashing Liquid 750ml</p>
+        <p class="price">R 32.00</p>
+      </div>
+      <button onclick="saveToWallet('Shoprite Sunlight')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>Bulk Potatoes 7kg</p>
+        <p class="price">R 69.00</p>
+      </div>
+      <button onclick="saveToWallet('Shoprite Potatoes')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>Coca-Cola 2L (Twin Pack)</p>
+        <p class="price">R 38.00</p>
+      </div>
+      <button onclick="saveToWallet('Shoprite Coke')">Add to Wallet</button>
+    </div>
+  </div>
+
+  <div class="shop-container">
+    <h2>🟢 Checkers - Better and Better</h2>
+    
+    <div class="item-card">
+      <div class="item-info">
+        <p>Forage & Feast Artisanal Steak</p>
+        <p class="price">R 145.00</p>
+      </div>
+      <button onclick="saveToWallet('Checkers Steak')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>Simple Truth Free Range Eggs 18s</p>
+        <p class="price">R 54.00</p>
+      </div>
+      <button onclick="saveToWallet('Checkers Eggs')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>Oh My Goodness! Kids Meal</p>
+        <p class="price">R 45.00</p>
+      </div>
+      <button onclick="saveToWallet('Checkers Kids Meal')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>Crystal Valley Fresh Milk 2L</p>
+        <p class="price">R 32.00</p>
+      </div>
+      <button onclick="saveToWallet('Checkers Milk')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>Sixty60 Delivery Voucher</p>
+        <p class="price">R 0.00 (FREE)</p>
+      </div>
+      <button onclick="saveToWallet('Checkers Voucher')">Add to Wallet</button>
+    </div>
+  </div>
+
+  <div class="shop-container">
+    <h2>🔵 Pick n Pay - Live Well</h2>
+    
+    <div class="item-card">
+      <div class="item-info">
+        <p>PnP White Bread Loaf</p>
+        <p class="price">R 14.50</p>
+      </div>
+      <button onclick="saveToWallet('PnP Bread')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>No Name Frozen Chips 1kg</p>
+        <p class="price">R 35.00</p>
+      </div>
+      <button onclick="saveToWallet('PnP Chips')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>Huletts White Sugar 2.5kg</p>
+        <p class="price">R 52.00</p>
+      </div>
+      <button onclick="saveToWallet('PnP Sugar')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>PnP Fresh Bananas 1.2kg</p>
+        <p class="price">R 22.00</p>
+      </div>
+      <button onclick="saveToWallet('PnP Bananas')">Add to Wallet</button>
+    </div>
+
+    <div class="item-card">
+      <div class="item-info">
+        <p>Smart Shopper Double Points Pack</p>
+        <p class="price">BONUS</p>
+      </div>
+      <button onclick="saveToWallet('PnP Points')">Add to Wallet</button>
+    </div>
+  </div>
+
+  <script>
+    function saveToWallet(item) {
+      alert("Opening Google Wallet to save your " + item + " deal!");
+      // Future home of your Google Wallet API link!
+    }
+  </script>
+
 </body>
+</html>

@@ -1,73 +1,304 @@
-<style>
-  body { font-family: 'Arial', sans-serif; background: #f4f4f4; padding: 20px; }
-  h1 { text-align: center; color: #333; }
-  h2 { border-left: 5px solid #333; padding-left: 10px; margin-top: 40px; color: #222; }
-  
-  .shop-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-
-  .item-card {
-    background: white;
-    width: 250px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-  }
-
-  .product-img { width: 100%; height: 150px; object-fit: cover; background: #eee; }
-
-  .content { padding: 12px; }
-  .item-name { font-size: 0.9em; height: 40px; margin: 0; }
-  .price { font-weight: bold; color: #2e7d32; font-size: 1.1em; margin: 8px 0; }
-
-  .button-group { display: flex; gap: 8px; }
-  .btn-wallet { background: #000; color: white; flex: 3; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-size: 0.75em; font-weight: bold; }
-  .btn-like { background: #fff; color: red; border: 1px solid red; flex: 1; padding: 8px; border-radius: 4px; cursor: pointer; }
-</style>
-
 <!DOCTYPE html>
 <html>
-<head><title>Save More Dealz - Township Flyer</title></head>
+<head>
+  <title>Sava More - Smart Flyer</title>
+
+  <style>
+    body { font-family: Arial; background:#f4f4f4; padding:20px; }
+
+    h1 { text-align:center; }
+    h2 { margin-top:40px; }
+
+    /* HORIZONTAL SCROLL */
+    .shop-container {
+      display:flex;
+      overflow-x:auto;
+      gap:15px;
+      padding:10px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .item-card {
+      min-width:200px;
+      flex:0 0 auto;
+      background:white;
+      border-radius:10px;
+      box-shadow:0 3px 6px rgba(0,0,0,0.1);
+      overflow:hidden;
+      scroll-snap-align:start;
+      position:relative;
+    }
+
+    .product-img { width:100%; height:130px; object-fit:cover; }
+
+    .content { padding:10px; }
+
+    .price { font-weight:bold; color:green; }
+
+    .button-group { display:flex; gap:5px; margin-top:8px; }
+
+    button {
+      flex:1;
+      padding:6px;
+      border:none;
+      border-radius:5px;
+      cursor:pointer;
+      font-size:12px;
+    }
+
+    .btn-add { background:black; color:white; }
+    .btn-like { background:white; border:1px solid red; color:red; }
+
+    .badge {
+      position:absolute;
+      top:8px;
+      left:8px;
+      background:red;
+      color:white;
+      font-size:10px;
+      padding:3px 6px;
+      border-radius:4px;
+    }
+
+    /* FLOATING BUTTON */
+    .floating-btn {
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      background:black;
+      color:white;
+      padding:12px 16px;
+      border-radius:30px;
+      cursor:pointer;
+    }
+
+    /* MODAL */
+    .modal {
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background:white;
+      margin:10% auto;
+      padding:20px;
+      width:90%;
+      max-width:400px;
+      border-radius:10px;
+      max-height:70%;
+      overflow:auto;
+    }
+
+    .hint {
+      font-size:12px;
+      color:gray;
+      margin-left:10px;
+    }
+  </style>
+</head>
+
 <body>
 
-  <h1>🔥 Premium Township Deals 🔥</h1>
+<h1>🔥 Sava More Deals 🔥</h1>
 
-  <h2 style="border-color: red;">🔴 Shoprite</h2>
-  <div class="shop-container">
+<!-- SHOPRITE -->
+<h2>🔴 Shoprite</h2>
+<p class="hint">👉 Swipe to see more deals</p>
+<div class="shop-container">
+
+<script>
+const shopriteItems = [
+  ["Chicken 2kg",75],
+  ["Maize Meal 5kg",69],
+  ["Rice 5kg",89],
+  ["Milk 2L",34],
+  ["Eggs 18 pack",49],
+  ["Sugar 2kg",45],
+  ["Oil 2L",65],
+  ["Bread",12],
+  ["Soap Bar",15],
+  ["Juice 2L",25]
+];
+
+shopriteItems.forEach(i => {
+  document.write(`
     <div class="item-card">
-      <img src="https://via.placeholder.com/250x150?text=Maize+Meal" class="product-img">
+      <div class="badge">🔥 HOT</div>
+      <img src="https://via.placeholder.com/200x130?text=${i[0]}" class="product-img">
       <div class="content">
-        <p class="item-name">Ritebrand Maize Meal 10kg</p>
-        <p class="price">R 99.00</p>
+        <p>${i[0]}</p>
+        <p class="price">R${i[1]}</p>
         <div class="button-group">
-            <button class="btn-wallet" onclick="alert('Added to Wallet')">Add to Wallet</button>
-            <button class="btn-like" onclick="alert('Liked!')">❤️</button>
+          <button class="btn-add" onclick="addToList('Shoprite','${i[0]}',${i[1]})">🛒 Add</button>
         </div>
       </div>
     </div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Chicken" class="product-img"><div class="content"><p class="item-name">Mixed Chicken Portions 2kg</p><p class="price">R 75.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Milk" class="product-img"><div class="content"><p class="item-name">Long Life Milk 6x1L</p><p class="price">R 95.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Oil" class="product-img"><div class="content"><p class="item-name">Cooking Oil 2L</p><p class="price">R 65.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Sugar" class="product-img"><div class="content"><p class="item-name">White Sugar 2.5kg</p><p class="price">R 52.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-  </div>
+  `);
+});
+</script>
 
-  <h2 style="border-color: blue;">🔵 Pick n Pay</h2>
-  <div class="shop-container">
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Bread" class="product-img"><div class="content"><p class="item-name">PnP White Bread Loaf</p><p class="price">R 14.50</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Eggs" class="product-img"><div class="content"><p class="item-name">Large Eggs 18s</p><p class="price">R 54.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Rice" class="product-img"><div class="content"><p class="item-name">Parboiled Rice 2kg</p><p class="price">R 38.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Tea" class="product-img"><div class="content"><p class="item-name">Joko Tea Bags 100s</p><p class="price">R 42.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Soap" class="product-img"><div class="content"><p class="item-name">Sunlight Laundry Bar 500g</p><p class="price">R 18.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-  </div>
+</div>
 
-  <h2 style="border-color: orange;">🟠 Boxer</h2>
-  <div class="shop-container">
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Samp" class="product-img"><div class="content"><p class="item-name">Boxer Samp 2.5kg</p><p class="price">R 28.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Beans" class="product-img"><div class="content"><p class="item-name">Sugar Beans 1kg</p><p class="price">R 32.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Juice" class="product-img"><div class="content"><p class="item-name">Concentrated Juice 2L</p><p class="price">R 25.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Flour" class="product-img"><div class="content"><p class="item-name">Cake Flour 2.5kg</p><p class="price">R 39.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-    <div class="item-card"><img src="https://via.placeholder.com/250x150?text=Coffee" class="product-img"><div class="content"><p class="item-name">Ricoffy 250g</p><p class="price">R 45.00</p><div class="button-group"><button class="btn-wallet">Add to Wallet</button><button class="btn-like">❤️</button></div></div></div>
-  </div>
+
+<!-- PICK N PAY -->
+<h2>🔵 Pick n Pay</h2>
+<p class="hint">👉 Swipe to see more deals</p>
+<div class="shop-container">
+
+<script>
+const pnpItems = [
+  ["Bread",14],
+  ["Eggs 12 pack",35],
+  ["Milk 1L",18],
+  ["Rice 2kg",38],
+  ["Chicken Wings",69],
+  ["Tea Bags",42],
+  ["Flour 2.5kg",39],
+  ["Apples 2kg",34],
+  ["Potatoes 7kg",59],
+  ["Toilet Paper",79]
+];
+
+pnpItems.forEach(i => {
+  document.write(`
+    <div class="item-card">
+      <img src="https://via.placeholder.com/200x130?text=${i[0]}" class="product-img">
+      <div class="content">
+        <p>${i[0]}</p>
+        <p class="price">R${i[1]}</p>
+        <div class="button-group">
+          <button class="btn-add" onclick="addToList('Pick n Pay','${i[0]}',${i[1]})">🛒 Add</button>
+        </div>
+      </div>
+    </div>
+  `);
+});
+</script>
+
+</div>
+
+
+<!-- SERVICES -->
+<h2>🛠️ Services Near You</h2>
+<p class="hint">👉 Tap ❤️ to request a callback</p>
+
+<div class="shop-container">
+
+<script>
+const services = [
+  "Plumber",
+  "Electrician",
+  "Hair Salon",
+  "Car Wash",
+  "Mechanic",
+  "Catering",
+  "Painter",
+  "Cleaning Service"
+];
+
+services.forEach(service => {
+  document.write(`
+    <div class="item-card">
+      <img src="https://via.placeholder.com/200x130?text=${service}" class="product-img">
+      <div class="content">
+        <p>${service}</p>
+        <div class="button-group">
+          <button class="btn-like" onclick="requestService('${service}')">❤️ Request</button>
+        </div>
+      </div>
+    </div>
+  `);
+});
+</script>
+
+</div>
+
+
+<!-- FLOATING BUTTON -->
+<div class="floating-btn" onclick="openList()">🛒 My List</div>
+
+<!-- MODAL -->
+<div class="modal" id="listModal">
+  <div class="modal-content" id="listContent"></div>
+</div>
+
+
+<script>
+
+// ADD TO LIST
+function addToList(store, item, price) {
+  let list = JSON.parse(localStorage.getItem("shoppingList")) || [];
+  list.push({store, item, price});
+  localStorage.setItem("shoppingList", JSON.stringify(list));
+  alert(item + " added 🛒");
+}
+
+
+// OPEN LIST
+function openList() {
+  let list = JSON.parse(localStorage.getItem("shoppingList")) || [];
+  let grouped = {};
+  let html = "<h3>🛒 My Shopping List</h3>";
+
+  list.forEach(i => {
+    if (!grouped[i.store]) grouped[i.store] = [];
+    grouped[i.store].push(i);
+  });
+
+  let grandTotal = 0;
+
+  for (let store in grouped) {
+    let total = 0;
+    html += "<h4>" + store + "</h4>";
+
+    grouped[store].forEach(i => {
+      html += "<p>" + i.item + " - R" + i.price + "</p>";
+      total += i.price;
+    });
+
+    html += "<b>Total: R" + total + "</b><hr>";
+    grandTotal += total;
+  }
+
+  html += "<h3>Grand Total: R" + grandTotal + "</h3>";
+
+  document.getElementById("listContent").innerHTML = html;
+  document.getElementById("listModal").style.display = "block";
+}
+
+
+// CLOSE MODAL
+window.onclick = function(e) {
+  if (e.target == document.getElementById("listModal")) {
+    document.getElementById("listModal").style.display = "none";
+  }
+}
+
+
+// SERVICE REQUEST
+function requestService(service) {
+  let confirmCall = confirm("Request a call for " + service + "?");
+
+  if (confirmCall) {
+    let name = prompt("Your name:");
+    let phone = prompt("Your number:");
+
+    if (name && phone) {
+      alert("Request sent! 📞");
+
+      console.log({
+        service,
+        name,
+        phone
+      });
+    }
+  }
+}
+
+</script>
 
 </body>
 </html>

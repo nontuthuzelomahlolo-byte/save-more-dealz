@@ -9,17 +9,13 @@
     h1 { text-align:center; }
     h2 { margin-top:40px; }
 
-    .category-title {
-      margin-top:15px;
-      font-weight:bold;
-      color:#333;
-    }
-
+    /* ONE CONTINUOUS SCROLL */
     .shop-container {
       display:flex;
       overflow-x:auto;
-      gap:15px;
+      gap:10px;
       padding:10px;
+      align-items:stretch;
     }
 
     .item-card {
@@ -28,6 +24,7 @@
       border-radius:10px;
       box-shadow:0 3px 6px rgba(0,0,0,0.1);
       overflow:hidden;
+      flex:0 0 auto;
     }
 
     .product-img { width:100%; height:110px; object-fit:cover; }
@@ -49,6 +46,19 @@
     .liked {
       background:red !important;
       color:white !important;
+    }
+
+    /* CATEGORY MARKER (INLINE) */
+    .category-marker {
+      min-width:120px;
+      background:black;
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:10px;
+      font-weight:bold;
+      flex:0 0 auto;
     }
 
     .floating-btn {
@@ -94,15 +104,22 @@
 <h1>🔥 Sava More Deals 🔥</h1>
 
 <!-- STORES -->
-<div id="stores"></div>
+<h2>🔴 Shoprite</h2>
+<div class="shop-container" id="shoprite"></div>
+
+<h2>🔵 Pick n Pay</h2>
+<div class="shop-container" id="pnp"></div>
+
+<h2>🟠 Boxer</h2>
+<div class="shop-container" id="boxer"></div>
 
 <!-- SERVICES -->
 <h2>🛠️ Services</h2>
 
 <select onchange="filterServices(this.value)">
   <option value="All">All Services</option>
-  <option value="Home">Home Services</option>
-  <option value="Auto">Auto Services</option>
+  <option value="Home">Home</option>
+  <option value="Auto">Auto</option>
   <option value="Lifestyle">Lifestyle</option>
 </select>
 
@@ -118,67 +135,68 @@
 
 <script>
 
-// PRODUCT CATEGORIES
+// CATEGORIES
 const categories = ["Meat","Dairy","Bakery","Pantry"];
 
-// GENERATE ITEMS
-function generateStore(name){
-  let store = {};
-  categories.forEach(cat=>{
-    store[cat] = [];
+// GENERATE STORE DATA
+function generateStore() {
+  let store = [];
+
+  categories.forEach(cat => {
+    store.push({type:"category", name:cat});
+
     for(let i=1;i<=5;i++){
-      store[cat].push({
-        name: cat+" Item "+i,
-        price: Math.floor(Math.random()*80)+10
+      store.push({
+        type:"product",
+        category:cat,
+        name:cat+" Item "+i,
+        price:Math.floor(Math.random()*80)+10
       });
     }
   });
+
   return store;
 }
 
 const stores = {
-  "Shoprite": generateStore("Shoprite"),
-  "Pick n Pay": generateStore("PnP"),
-  "Boxer": generateStore("Boxer")
+  "Shoprite": generateStore(),
+  "Pick n Pay": generateStore(),
+  "Boxer": generateStore()
 };
 
 // RENDER STORES
-function renderStores(){
-  let container = document.getElementById("stores");
+function renderStore(storeName, containerId) {
+  let container = document.getElementById(containerId);
 
-  for(let storeName in stores){
+  stores[storeName].forEach(item => {
 
-    container.innerHTML += `<h2>${storeName}</h2>`;
+    if(item.type==="category"){
+      let div = document.createElement("div");
+      div.className="category-marker";
+      div.innerText=item.name;
+      container.appendChild(div);
+    }
 
-    categories.forEach(cat=>{
+    if(item.type==="product"){
+      let div = document.createElement("div");
+      div.className="item-card";
 
-      container.innerHTML += `<div class="category-title">${cat}</div>`;
-      container.innerHTML += `<div class="shop-container" id="${storeName+cat}"></div>`;
+      div.innerHTML=`
+        <img src="https://via.placeholder.com/160x110?text=${item.name}" class="product-img">
+        <div class="content">
+          <p>${item.name}</p>
+          <p class="price">R${item.price}</p>
+          <button class="btn-like" onclick="likeProduct(this,'${storeName}','${item.name}',${item.price})">❤️</button>
+        </div>
+      `;
 
-      stores[storeName][cat].forEach(item=>{
-        let div = document.createElement("div");
-        div.className="item-card";
+      container.appendChild(div);
+    }
 
-        div.innerHTML=`
-          <img src="https://via.placeholder.com/160x110?text=${item.name}" class="product-img">
-          <div class="content">
-            <p>${item.name}</p>
-            <p class="price">R${item.price}</p>
-            <button class="btn-like" onclick="likeProduct(this,'${storeName}','${item.name}',${item.price})">❤️</button>
-          </div>
-        `;
-
-        setTimeout(()=>{
-          document.getElementById(storeName+cat).appendChild(div);
-        },0);
-
-      });
-
-    });
-  }
+  });
 }
 
-// SERVICES DATA
+// SERVICES
 const services = [
   {name:"Plumber",category:"Home"},
   {name:"Electrician",category:"Home"},
@@ -199,7 +217,6 @@ const services = [
   {name:"Photographer",category:"Lifestyle"}
 ];
 
-// RENDER SERVICES
 function renderServices(filter="All"){
   let container = document.getElementById("services");
   container.innerHTML="";
@@ -207,7 +224,7 @@ function renderServices(filter="All"){
   services.forEach(s=>{
     if(filter==="All" || s.category===filter){
 
-      let div = document.createElement("div");
+      let div=document.createElement("div");
       div.className="item-card";
 
       div.innerHTML=`
@@ -286,7 +303,9 @@ function requestService(service){
 }
 
 // INIT
-renderStores();
+renderStore("Shoprite","shoprite");
+renderStore("Pick n Pay","pnp");
+renderStore("Boxer","boxer");
 renderServices();
 
 </script>

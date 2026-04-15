@@ -9,33 +9,36 @@
     h1 { text-align:center; }
     h2 { margin-top:40px; }
 
+    .category-title {
+      margin-top:15px;
+      font-weight:bold;
+      color:#333;
+    }
+
     .shop-container {
       display:flex;
       overflow-x:auto;
       gap:15px;
       padding:10px;
-      scroll-snap-type:x mandatory;
     }
 
     .item-card {
-      min-width:180px;
-      flex:0 0 auto;
+      min-width:160px;
       background:white;
       border-radius:10px;
       box-shadow:0 3px 6px rgba(0,0,0,0.1);
       overflow:hidden;
-      scroll-snap-align:start;
     }
 
-    .product-img { width:100%; height:120px; object-fit:cover; }
+    .product-img { width:100%; height:110px; object-fit:cover; }
 
-    .content { padding:10px; }
+    .content { padding:8px; }
 
     .price { font-weight:bold; color:green; }
 
     .btn-like {
       width:100%;
-      padding:6px;
+      padding:5px;
       border-radius:5px;
       border:1px solid red;
       background:white;
@@ -76,33 +79,11 @@
       border-radius:10px;
     }
 
-    /* SERVICES */
-    .search-box {
+    select {
       width:100%;
       padding:8px;
-      margin-bottom:10px;
+      margin-bottom:15px;
       border-radius:5px;
-      border:1px solid #ccc;
-    }
-
-    .categories {
-      display:flex;
-      gap:10px;
-      overflow-x:auto;
-      margin-bottom:10px;
-    }
-
-    .cat-btn {
-      padding:6px 10px;
-      background:#ddd;
-      border:none;
-      border-radius:20px;
-      cursor:pointer;
-    }
-
-    .active {
-      background:black;
-      color:white;
     }
 
   </style>
@@ -113,26 +94,17 @@
 <h1>🔥 Sava More Deals 🔥</h1>
 
 <!-- STORES -->
-<h2>🔴 Shoprite</h2>
-<div class="shop-container" id="shoprite"></div>
-
-<h2>🔵 Pick n Pay</h2>
-<div class="shop-container" id="pnp"></div>
-
-<h2>🟠 Boxer</h2>
-<div class="shop-container" id="boxer"></div>
+<div id="stores"></div>
 
 <!-- SERVICES -->
 <h2>🛠️ Services</h2>
 
-<input type="text" id="searchInput" class="search-box" placeholder="Search service..." onkeyup="renderServices()">
-
-<div class="categories">
-  <button class="cat-btn active" onclick="setCategory('All',this)">All</button>
-  <button class="cat-btn" onclick="setCategory('Home',this)">Home</button>
-  <button class="cat-btn" onclick="setCategory('Auto',this)">Auto</button>
-  <button class="cat-btn" onclick="setCategory('Lifestyle',this)">Lifestyle</button>
-</div>
+<select onchange="filterServices(this.value)">
+  <option value="All">All Services</option>
+  <option value="Home">Home Services</option>
+  <option value="Auto">Auto Services</option>
+  <option value="Lifestyle">Lifestyle</option>
+</select>
 
 <div class="shop-container" id="services"></div>
 
@@ -146,81 +118,100 @@
 
 <script>
 
-// GENERATE 20 ITEMS PER STORE
-function generateItems(prefix) {
-  let arr = [];
-  for(let i=1;i<=20;i++){
-    arr.push([prefix+" Item "+i, Math.floor(Math.random()*80)+10]);
-  }
-  return arr;
-}
+// PRODUCT CATEGORIES
+const categories = ["Meat","Dairy","Bakery","Pantry"];
 
-const shopriteItems = generateItems("Shoprite");
-const pnpItems = generateItems("PnP");
-const boxerItems = generateItems("Boxer");
-
-// RENDER PRODUCTS
-function renderProducts(list, containerId, store) {
-  let container = document.getElementById(containerId);
-
-  list.forEach(i => {
-    let div = document.createElement("div");
-    div.className = "item-card";
-
-    div.innerHTML = `
-      <img src="https://via.placeholder.com/180x120?text=${i[0]}" class="product-img">
-      <div class="content">
-        <p>${i[0]}</p>
-        <p class="price">R${i[1]}</p>
-        <button class="btn-like" onclick="likeProduct(this,'${store}','${i[0]}',${i[1]})">❤️</button>
-      </div>
-    `;
-
-    container.appendChild(div);
+// GENERATE ITEMS
+function generateStore(name){
+  let store = {};
+  categories.forEach(cat=>{
+    store[cat] = [];
+    for(let i=1;i<=5;i++){
+      store[cat].push({
+        name: cat+" Item "+i,
+        price: Math.floor(Math.random()*80)+10
+      });
+    }
   });
+  return store;
 }
 
-// SERVICES (5 EACH CATEGORY)
+const stores = {
+  "Shoprite": generateStore("Shoprite"),
+  "Pick n Pay": generateStore("PnP"),
+  "Boxer": generateStore("Boxer")
+};
+
+// RENDER STORES
+function renderStores(){
+  let container = document.getElementById("stores");
+
+  for(let storeName in stores){
+
+    container.innerHTML += `<h2>${storeName}</h2>`;
+
+    categories.forEach(cat=>{
+
+      container.innerHTML += `<div class="category-title">${cat}</div>`;
+      container.innerHTML += `<div class="shop-container" id="${storeName+cat}"></div>`;
+
+      stores[storeName][cat].forEach(item=>{
+        let div = document.createElement("div");
+        div.className="item-card";
+
+        div.innerHTML=`
+          <img src="https://via.placeholder.com/160x110?text=${item.name}" class="product-img">
+          <div class="content">
+            <p>${item.name}</p>
+            <p class="price">R${item.price}</p>
+            <button class="btn-like" onclick="likeProduct(this,'${storeName}','${item.name}',${item.price})">❤️</button>
+          </div>
+        `;
+
+        setTimeout(()=>{
+          document.getElementById(storeName+cat).appendChild(div);
+        },0);
+
+      });
+
+    });
+  }
+}
+
+// SERVICES DATA
 const services = [
-  {name:"QuickFix Plumbing",category:"Home"},
-  {name:"BrightSpark Electric",category:"Home"},
-  {name:"PaintPro Crew",category:"Home"},
-  {name:"CleanHome Services",category:"Home"},
-  {name:"RoofCare Experts",category:"Home"},
+  {name:"Plumber",category:"Home"},
+  {name:"Electrician",category:"Home"},
+  {name:"Painter",category:"Home"},
+  {name:"Cleaner",category:"Home"},
+  {name:"Builder",category:"Home"},
 
-  {name:"Speedy Mechanics",category:"Auto"},
-  {name:"AutoGlow Car Wash",category:"Auto"},
-  {name:"TyreFix Hub",category:"Auto"},
-  {name:"Mobile Oil Change",category:"Auto"},
-  {name:"Battery Rescue",category:"Auto"},
+  {name:"Mechanic",category:"Auto"},
+  {name:"Car Wash",category:"Auto"},
+  {name:"Tyre Repair",category:"Auto"},
+  {name:"Battery Fix",category:"Auto"},
+  {name:"Tow Service",category:"Auto"},
 
-  {name:"Urban Cuts Salon",category:"Lifestyle"},
-  {name:"Glow Beauty Spa",category:"Lifestyle"},
-  {name:"ChefOnCall Catering",category:"Lifestyle"},
-  {name:"PartyPlanners SA",category:"Lifestyle"},
-  {name:"Fitness Coach Pro",category:"Lifestyle"}
+  {name:"Hair Salon",category:"Lifestyle"},
+  {name:"Spa",category:"Lifestyle"},
+  {name:"Catering",category:"Lifestyle"},
+  {name:"Fitness Coach",category:"Lifestyle"},
+  {name:"Photographer",category:"Lifestyle"}
 ];
 
-let currentCategory = "All";
-
 // RENDER SERVICES
-function renderServices() {
+function renderServices(filter="All"){
   let container = document.getElementById("services");
-  container.innerHTML = "";
+  container.innerHTML="";
 
-  let search = document.getElementById("searchInput").value.toLowerCase();
+  services.forEach(s=>{
+    if(filter==="All" || s.category===filter){
 
-  services.forEach(s => {
-
-    let matchSearch = s.name.toLowerCase().includes(search);
-    let matchCategory = currentCategory==="All" || s.category===currentCategory;
-
-    if(matchSearch && matchCategory){
       let div = document.createElement("div");
-      div.className = "item-card";
+      div.className="item-card";
 
-      div.innerHTML = `
-        <img src="https://via.placeholder.com/180x120?text=${s.name}" class="product-img">
+      div.innerHTML=`
+        <img src="https://via.placeholder.com/160x110?text=${s.name}" class="product-img">
         <div class="content">
           <p>${s.name}</p>
           <button class="btn-like" onclick="requestService('${s.name}')">❤️</button>
@@ -232,12 +223,8 @@ function renderServices() {
   });
 }
 
-// CATEGORY SWITCH
-function setCategory(cat,btn){
-  currentCategory = cat;
-  document.querySelectorAll(".cat-btn").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  renderServices();
+function filterServices(cat){
+  renderServices(cat);
 }
 
 // LIKE PRODUCT
@@ -245,15 +232,14 @@ function likeProduct(btn,store,item,price){
   let list = JSON.parse(localStorage.getItem("shoppingList")) || [];
   list.push({store,item,price});
   localStorage.setItem("shoppingList", JSON.stringify(list));
-
   btn.classList.add("liked");
 }
 
 // OPEN LIST
 function openList(){
   let list = JSON.parse(localStorage.getItem("shoppingList")) || [];
-  let grouped = {};
-  let html = "<h3>🛒 My List</h3>";
+  let grouped={};
+  let html="<h3>🛒 My List</h3>";
 
   list.forEach(i=>{
     if(!grouped[i.store]) grouped[i.store]=[];
@@ -277,7 +263,7 @@ function openList(){
 
   html+="<h3>Total Basket: R"+totalAll+"</h3>";
 
-  document.getElementById("listContent").innerHTML = html;
+  document.getElementById("listContent").innerHTML=html;
   document.getElementById("listModal").style.display="block";
 }
 
@@ -293,18 +279,14 @@ function requestService(service){
   if(confirm("Request "+service+" to contact you?")){
     let name=prompt("Name:");
     let phone=prompt("Phone:");
-
     if(name && phone){
       alert("Request sent 📞");
-      console.log({service,name,phone});
     }
   }
 }
 
 // INIT
-renderProducts(shopriteItems,"shoprite","Shoprite");
-renderProducts(pnpItems,"pnp","Pick n Pay");
-renderProducts(boxerItems,"boxer","Boxer");
+renderStores();
 renderServices();
 
 </script>
